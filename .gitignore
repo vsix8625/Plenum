@@ -1,3 +1,7 @@
+compile_commands.json
+.storm/
+crater/
+
 # Prerequisites
 *.d
 

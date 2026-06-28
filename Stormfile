@@ -1,0 +1,34 @@
+cc: /usr/bin/gcc
+cflags: -Wall -Wextra -Werror -std=c23
+
+target test-init
+{
+    kind: test
+
+    cflags::  -ggdb
+    defines: -DDEBUG
+
+    sources:
+        src/
+        test/test-init.c
+
+    includes:
+        -I.
+        -Iinclude
+}
+
+target plenum-debug
+{
+    print: __sk_version__
+    kind: static
+
+    cflags::  -ggdb
+    defines: -DDEBUG
+
+    sources:
+        src/
+
+    includes:
+        -I.
+        -Iinclude
+}

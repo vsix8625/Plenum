@@ -1,20 +1,40 @@
 cc: /usr/bin/gcc
 cflags: -Wall -Wextra -Werror -std=c23
 
-target test-init
-{
-    kind: test
+if(__sk_version_minor__ <= 8){
+    exit: "Requires sk version 0.8.x or latest"
+}
 
-    cflags::  -ggdb
-    defines: -DDEBUG
+if(run_tests){
+    target test_arena {
+        kind: test
 
-    sources:
-        src/
-        test/test-init.c
+        defines: -DDEBUG
 
-    includes:
-        -I.
-        -Iinclude
+        sources:
+            src/
+            test/arena.c
+
+        includes:
+            -I.
+            -Iinclude
+    }
+
+    target test-init
+    {
+        kind: test
+
+        cflags::  -ggdb
+        defines: -DDEBUG
+
+        sources:
+            src/
+            test/test-init.c
+
+        includes:
+            -I.
+            -Iinclude
+    }
 }
 
 target plenum-debug

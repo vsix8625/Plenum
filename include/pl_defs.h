@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef _DEFAULT_SOURCE
+    #define _DEFAULT_SOURCE
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -16,6 +20,10 @@ typedef uint64_t u64;
 
 typedef float  f32;
 typedef double f64;
+
+typedef u8        byte;
+typedef uintptr_t uptr;
+typedef intptr_t  iptr;
 
 typedef enum pl_exit : i32
 {
@@ -52,3 +60,44 @@ static_assert(sizeof(void *) == 8);  // std=c23
 #define PL_KiB(x) ((u64) (x) << 10)
 #define PL_MiB(x) ((u64) (x) << 20)
 #define PL_GiB(x) ((u64) (x) << 30)
+
+//----------------------------------------------------------------------------------------------------
+// Limits
+
+#define PL_BUF_SIZE_16   (1 << 4)
+#define PL_BUF_SIZE_32   (1 << 5)
+#define PL_BUF_SIZE_64   (1 << 6)
+#define PL_BUF_SIZE_128  (1 << 7)
+#define PL_BUF_SIZE_256  (1 << 8)
+#define PL_BUF_SIZE_512  (1 << 9)
+#define PL_BUF_SIZE_1024 (1 << 10)
+#define PL_BUF_SIZE_2048 (1 << 11)
+#define PL_BUF_SIZE_4096 (1 << 12)
+#define PL_BUF_SIZE_8192 (1 << 13)
+#define PL_BUF_SIZE_16K  (1 << 14)
+#define PL_BUF_SIZE_32K  (1 << 15)
+#define PL_BUF_SIZE_64K  (1 << 16)
+
+#define PL_PATH_MAX 4096
+
+//----------------------------------------------------------------------------------------------------
+
+#ifndef pl_malloc
+    #define pl_malloc malloc
+#endif
+
+#ifndef pl_calloc
+    #define pl_calloc calloc
+#endif
+
+#ifndef pl_realloc
+    #define pl_realloc realloc
+#endif
+
+#ifndef pl_strdup
+    #define pl_strdup strdup
+#endif
+
+#ifndef pl_free
+    #define pl_free free
+#endif

@@ -1,45 +1,32 @@
 #include "../include/plenum.h"
 #include <stdio.h>
 
-i32 main(i32 argc, char **argv)
+i32 main(void)
 {
-    (void) argc;
-    (void) argv;
-    if (pl_is_initialized())
-    {
-        printf("Plenum initialized!\n");
-    }
-    else
-    {
-        printf("Plenum NOT initialized!\n");
-    }
-    pl_init();
+    pl_log("test");
 
-    if (pl_arena_init() < 0)
+    if (pl_init() != PL_OK)
     {
         return PL_EXIT_FAILURE;
     }
 
-    if (pl_is_initialized())
-    {
-        printf("Plenum initialized!\n");
-    }
-    else
-    {
-        printf("Plenum NOT initialized!\n");
-    }
+    i32 result = PL_EXIT_SUCCESS;
+
+    pl_io_set_prefix(PL_IO_LOG_LEVEL_LOG, "[test]: ", PL_IO_COLOR_BLUE);
+    pl_io_set_debug(true);
+
+    pl_dbg("Debug enabled");
+
+    pl_log("Hello world from test-init.c");
+
+    pl_printf("This is raw printf style %d\n", 101);
+    pl_log("This is log style %s", "logger");
+    pl_warn("This is warn style %d", -1);
+    pl_err("This is err style");
+
+    PL_ASSERT_ERRLOG("Error in test");
 
     pl_quit();
-    printf("Plenum quit!\n");
 
-    if (pl_is_initialized())
-    {
-        printf("Plenum initialized!\n");
-    }
-    else
-    {
-        printf("Plenum NOT initialized!\n");
-    }
-
-    return PL_EXIT_SUCCESS;
+    return result;
 }

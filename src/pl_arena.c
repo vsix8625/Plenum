@@ -1,4 +1,5 @@
 #include "pl_arena.h"
+#include "pl_io.h"
 #include "pl_init.h"
 
 #include <string.h>
@@ -7,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <execinfo.h>
 
 #define PL_ARENA_ADDR_HINT      0x700000000000ULL
 #define PL_ARENA_PAGE_SIZE_HUGE 0x00200000 /* 2MB huge pages */
@@ -116,7 +118,21 @@ pl_status pl_arena_init(void)
     enum pl_arena_state expected_state = PL_ARENA_STATE_OFF;
     if (!atomic_compare_exchange_strong(&g_pl_arena_state, &expected_state, PL_ARENA_STATE_ON))
     {
-        // NOTE: log_error
+        pl_err("State mismatch! Expected OFF (0), but actual state was: %d", expected_state);
+
+        // Print an instant stack trace straight to terminal
+        void  *buffer[10];
+        int    size    = backtrace(buffer, 10);
+        char **strings = backtrace_symbols(buffer, size);
+
+        pl_err("--- Execution Stack Trace ---");
+        for (int i = 0; i < size; i++)
+        {
+            pl_err("  [%d] %s", i, strings[i]);
+        }
+        free(strings);
+
+        PL_ASSERT_ERRLOG("atomic compare and exchanged failed");
         return PL_FATAL;
     }
 

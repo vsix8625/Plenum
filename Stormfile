@@ -6,8 +6,11 @@ if(__sk_version_minor__ <= 8){
 }
 
 if(run_tests){
-    target test_arena {
+
+    target test_arena
+    {
         kind: test
+        cflags:: -ggdb
 
         defines: -DDEBUG
 

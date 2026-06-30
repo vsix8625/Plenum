@@ -11,9 +11,6 @@ struct pl_arena
     const char *name;
 };
 
-pl_status pl_arena_init(void);
-void      pl_arena_quit(void);
-
 struct pl_arena *pl_arena_create(const char *name, u64 capacity);
 void             pl_arena_destroy(struct pl_arena *a);
 

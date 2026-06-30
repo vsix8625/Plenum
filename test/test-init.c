@@ -1,5 +1,4 @@
-#include "../include/plenum.h"
-#include <stdio.h>
+#include "plenum.h"
 
 i32 main(void)
 {

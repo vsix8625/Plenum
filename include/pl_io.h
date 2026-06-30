@@ -1,7 +1,9 @@
 #pragma once
 
 #include "pl_defs.h"
+#include "pl_string.h"
 #include <errno.h>
+#include <stdio.h>
 
 enum pl_io_log_level : u8
 {
@@ -45,16 +47,23 @@ void pl_io_set_prefix(enum pl_io_log_level level, const char *prefix, enum pl_io
 #define PL_ASSERT_ERRLOG(msg, ...)                                                                 \
     do                                                                                             \
     {                                                                                              \
-        char _err_buf[PL_BUF_SIZE_256];                                                            \
-        if (strerror_r(errno, _err_buf, sizeof(_err_buf)) != 0)                                    \
+        char err_buf[PL_BUF_SIZE_256];                                                             \
+        if (errno != 0)                                                                            \
         {                                                                                          \
-            snprintf(_err_buf, sizeof(_err_buf), "Unknown error %d", errno);                       \
+            if (strerror_r(errno, err_buf, sizeof(err_buf)) != 0)                                  \
+            {                                                                                      \
+                snprintf(err_buf, sizeof(err_buf), "Unknown error %d", errno);                     \
+            }                                                                                      \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            snprintf(err_buf, sizeof(err_buf), "n/a");                                             \
         }                                                                                          \
                                                                                                    \
         pl_err("In --> %s:%d(%s)\n          \u2514\u2500\u2500Sys Error [%s]: " msg,               \
                __FILE__,                                                                           \
                __LINE__,                                                                           \
                __func__,                                                                           \
-               _err_buf,                                                                           \
+               err_buf,                                                                            \
                ##__VA_ARGS__);                                                                     \
     } while (0)

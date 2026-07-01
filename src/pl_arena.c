@@ -160,8 +160,7 @@ void pl_arena_quit(void)
     while (n_count--)
     {
         struct pl_arena *a = g_pl_arena_registry.arenas[0];
-        (void) a;
-        // destroy arena fn
+        pl_arena_destroy(a);
     }
 
     pl_free(g_pl_arena_registry.arenas);

@@ -7,7 +7,17 @@
 
 static atomic_int g_pl_is_initialized = 0;
 
-struct pl_arena *g_pl_global_arena = nullptr;
+static struct pl_arena *g_pl_global_arena = nullptr;
+
+struct pl_arena *pl_get_global_arena(void)
+{
+    if (!g_pl_is_initialized)
+    {
+        return nullptr;
+    }
+
+    return g_pl_global_arena;
+}
 
 static pl_status init_stage_two(void)
 {
@@ -41,7 +51,7 @@ static pl_status init_stage_two(void)
     return PL_OK;
 }
 
-pl_status pl_init(void)
+PL_CTOR pl_status pl_init(void)
 {
     if (atomic_load(&g_pl_is_initialized))
     {
@@ -53,7 +63,7 @@ pl_status pl_init(void)
     return init_stage_two();
 }
 
-void pl_quit(void)
+PL_DTOR void pl_quit(void)
 {
     if (g_pl_global_arena)
     {

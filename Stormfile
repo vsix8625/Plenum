@@ -6,6 +6,24 @@ if(__sk_version_minor__ <= 8){
 }
 
 if(run_tests){
+    target test_ctor
+    {
+        kind: test
+        cflags::
+            -ggdb
+
+        defines:
+            -DDEBUG
+            -DPL_USE_CONSTRUCTOR
+
+        sources:
+            src/
+            test/test_ctor.c
+
+        includes:
+            -I.
+            -Iinclude
+    }
 
     target test_arena
     {
@@ -17,22 +35,6 @@ if(run_tests){
         sources:
             src/
             test/arena.c
-
-        includes:
-            -I.
-            -Iinclude
-    }
-
-    target test_time
-    {
-        kind: test
-        cflags:: -ggdb
-
-        defines: -DDEBUG
-
-        sources:
-            src/
-            test/test_time.c
 
         includes:
             -I.
@@ -59,9 +61,11 @@ if(run_tests){
 target plenum-debug
 {
     print: __sk_version__
+    linker: mold
     kind: static
 
-    cflags::  -ggdb
+    cflags::  -ggdb -pthread
+    lflags:: -pthread
     defines: -DDEBUG
 
     sources:

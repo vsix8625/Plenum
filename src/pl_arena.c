@@ -2,10 +2,8 @@
 #include "pl_io.h"
 #include "pl_init.h"
 
-#include <string.h>
 #include <assert.h>
 #include <stdatomic.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <execinfo.h>
@@ -329,4 +327,27 @@ char *pl_arena_strdup(struct pl_arena *a, const char *s)
     char  *dst = pl_arena_push(a, len);
     memcpy(dst, s, len);
     return dst;
+}
+
+struct pl_arena_tmp pl_arena_tmp_begin(struct pl_arena *a)
+{
+    struct pl_arena_tmp tmp = {0};
+
+    if (a == nullptr)
+    {
+        return tmp;
+    }
+
+    tmp.arena  = a;
+    tmp.offset = a->used;
+
+    return tmp;
+}
+
+void pl_arena_tmp_end(struct pl_arena_tmp tmp)
+{
+    if (tmp.arena != nullptr)
+    {
+        tmp.arena->used = tmp.offset;
+    }
 }

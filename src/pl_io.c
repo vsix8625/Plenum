@@ -74,11 +74,6 @@ static inline bool io_istty(i32 fd)
 
 static void io_log_core(enum pl_io_log_level level, const char *fmt, va_list args)
 {
-    if (!pl_is_initialized() || fmt == nullptr)
-    {
-        return;
-    }
-
     i32 fd = STDOUT_FILENO;
     if (level == PL_IO_LOG_LEVEL_WARN || level == PL_IO_LOG_LEVEL_ERR)
     {
@@ -178,6 +173,11 @@ static void io_log_core(enum pl_io_log_level level, const char *fmt, va_list arg
 
 void pl_printf(const char *fmt, ...)
 {
+    if (!pl_is_initialized() || fmt == nullptr)
+    {
+        return;
+    }
+
     va_list args;
     va_start(args, fmt);
     io_log_core(PL_IO_LOG_LEVEL_RAW, fmt, args);
@@ -186,6 +186,11 @@ void pl_printf(const char *fmt, ...)
 
 void pl_log(const char *fmt, ...)
 {
+    if (!pl_is_initialized() || fmt == nullptr)
+    {
+        return;
+    }
+
     va_list args;
     va_start(args, fmt);
     io_log_core(PL_IO_LOG_LEVEL_LOG, fmt, args);
@@ -194,6 +199,11 @@ void pl_log(const char *fmt, ...)
 
 void pl_warn(const char *fmt, ...)
 {
+    if (!pl_is_initialized() || fmt == nullptr)
+    {
+        return;
+    }
+
     va_list args;
     va_start(args, fmt);
     io_log_core(PL_IO_LOG_LEVEL_WARN, fmt, args);
@@ -202,6 +212,11 @@ void pl_warn(const char *fmt, ...)
 
 void pl_err(const char *fmt, ...)
 {
+    if (!pl_is_initialized() || fmt == nullptr)
+    {
+        return;
+    }
+
     va_list args;
     va_start(args, fmt);
     io_log_core(PL_IO_LOG_LEVEL_ERR, fmt, args);
@@ -217,7 +232,7 @@ void pl_io_set_debug(bool enabled)
 
 void pl_dbg(const char *fmt, ...)
 {
-    if (g_pl_io_set_dbg == false)
+    if (!pl_is_initialized() || fmt == nullptr || g_pl_io_set_dbg == false)
     {
         return;
     }

@@ -10,3 +10,4 @@
 #include "pl_cpu.h"     // IWYU pragma: export
 #include "pl_time.h"    // IWYU pragma: export
 #include "pl_array.h"   // IWYU pragma: export
+#include "pl_thread.h"  // IWYU pragma: export

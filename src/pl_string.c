@@ -1,4 +1,7 @@
 #include "pl_string.h"
+#include "pl_arena.h"
+#include <stdarg.h>
+#include <stdio.h>
 
 pl_sv pl_sv_from_cstr(const char *cstr)
 {
@@ -17,6 +20,11 @@ pl_sv pl_sv_from_cstr(const char *cstr)
 
 i32 pl_sv_strcmp(pl_sv a, pl_sv b)
 {
+    if (a.data == nullptr || b.data == nullptr)
+    {
+        return 1;
+    }
+
     if (a.len != b.len)
     {
         return (a.len > b.len) ? -1 : 1;

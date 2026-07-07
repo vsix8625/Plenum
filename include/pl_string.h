@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pl_defs.h"
-#include <string.h>
 
 typedef struct pl_sv_s
 {

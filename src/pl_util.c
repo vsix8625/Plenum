@@ -1,6 +1,5 @@
 #include "pl_util.h"
 #include <ctype.h>
-#include <string.h>
 #include <time.h>
 
 char *pl_trimstr(char *s)

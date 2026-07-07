@@ -1,6 +1,5 @@
 #include "pl_array.h"
 #include "pl_io.h"
-#include <stdlib.h>
 
 struct pl_array *pl_array_create(u64 initial_capacity)
 {

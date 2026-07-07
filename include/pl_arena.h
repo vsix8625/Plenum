@@ -2,6 +2,7 @@
 
 #include "pl_defs.h"
 
+// NOTE: make getter and move this on source
 struct pl_arena
 {
     void *base;
@@ -9,6 +10,13 @@ struct pl_arena
     u64   used;
 
     const char *name;
+};
+
+struct pl_arena_tmp
+{
+    struct pl_arena *arena;
+
+    u64 offset;
 };
 
 struct pl_arena *pl_arena_create(const char *name, u64 capacity);
@@ -21,6 +29,9 @@ char *pl_arena_strdup(struct pl_arena *a, const char *s);
 
 void pl_arena_reset_soft(struct pl_arena *a);
 void pl_arena_reset_hard(struct pl_arena *a);
+
+struct pl_arena_tmp pl_arena_tmp_begin(struct pl_arena *a);
+void                pl_arena_tmp_end(struct pl_arena_tmp tmp);
 
 static inline size_t pl_arena_nxtpow2(size_t v)
 {

@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>  // IWYU pragma: export
+#include <stdlib.h>  // IWYU pragma: export
 
 typedef int8_t  i8;
 typedef int16_t i16;
@@ -17,9 +19,6 @@ typedef uint8_t  u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
-
-typedef __int128_t  i128;
-typedef __uint128_t u128;
 
 typedef float  f32;
 typedef double f64;
@@ -106,3 +105,32 @@ static_assert(sizeof(void *) == 8);  // std=c23
 #ifndef pl_free
     #define pl_free free
 #endif
+
+//----------------------------------------------------------------------------------------------------
+
+#if defined(__GNUC__) || defined(__clang__)
+    #define PL_LIKELY(x)   __builtin_expect(!!(x), 1)
+    #define PL_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#else
+    #define PL_LIKELY(x)   (x)
+    #define PL_UNLIKELY(x) (x)
+#endif
+
+#define PL_STRINGIFY_INTERNAL(x) #x
+#define PL_STRINGIFY(x)          PL_STRINGIFY_INTERNAL(x)
+#define PL_CONCAT_INTERNAL(a, b) a##b
+#define PL_CONCAT(a, b)          PL_CONCAT_INTERNAL(a, b)
+#define PL_ARRAY_SIZE(arr)       (sizeof(arr) / sizeof(arr[0]))
+#define PL_TYPECAST(type, v)     ((type) v)
+#define PL_UNUSED(v)             (void) (v)
+#define PL_MIN(a, b)             ((a) < (b) ? (a) : (b))
+#define PL_MAX(a, b)             ((a) > (b) ? (a) : (b))
+
+//----------------------------------------------------------------------------------------------------
+
+#define PL_BIT(n)               (1ULL << (n))
+#define PL_BIT_SET(var, mask)   ((var) |= (mask))
+#define PL_BIT_CLEAR(var, mask) ((var) &= ~(mask))
+#define PL_BIT_TEST(var, mask)  ((var) & (mask) == mask)
+
+//----------------------------------------------------------------------------------------------------

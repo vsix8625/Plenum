@@ -23,6 +23,22 @@ if(run_tests){
             -Iinclude
     }
 
+    target test_time
+    {
+        kind: test
+        cflags:: -ggdb
+
+        defines: -DDEBUG
+
+        sources:
+            src/
+            test/test_time.c
+
+        includes:
+            -I.
+            -Iinclude
+    }
+
     target test-init
     {
         kind: test

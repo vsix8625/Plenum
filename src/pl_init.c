@@ -35,6 +35,9 @@ static pl_status init_stage_two(void)
 
     pl_io_set_prefix(PL_IO_LOG_LEVEL_LOG, "[plenum]: ", PL_IO_COLOR_GREEN);
 
+    // pl_time
+    pl_time_init();
+
     return PL_OK;
 }
 

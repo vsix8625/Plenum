@@ -27,10 +27,19 @@ i32 main(void)
 
     if (test_alloc == nullptr)
     {
-        fprintf(stderr, "Failed to allocate to arena\n");
         PL_ASSERT_ERRLOG("Failed to push to %s arena", arena->name);
         return PL_EXIT_FAILURE;
     }
+
+    // test over allco
+
+    i32 *oom = pl_arena_zero_push(arena, PL_GiB(1));
+
+    if (oom == nullptr)
+    {
+        PL_ASSERT_ERRLOG("Failed to push to %s arena", arena->name);
+    }
+    //----------------
 
     test_alloc->data = "ok";
     test_alloc->len  = strlen(test_alloc->data);

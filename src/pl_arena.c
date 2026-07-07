@@ -181,7 +181,7 @@ struct pl_arena *pl_arena_create(const char *name, u64 capacity)
 
     if (capacity == 0)
     {
-        // NOTE:
+        pl_err("Arena capacity must be greater than zero");
         return nullptr;
     }
 
@@ -201,8 +201,7 @@ struct pl_arena *pl_arena_create(const char *name, u64 capacity)
     struct pl_arena *arena = pl_calloc(1, sizeof(struct pl_arena));
     if (arena == nullptr)
     {
-        // NOTE:
-
+        PL_ASSERT_ERRLOG("failed to allocate for arena structure");
         return nullptr;
     }
 
@@ -216,7 +215,7 @@ struct pl_arena *pl_arena_create(const char *name, u64 capacity)
 
         if (ptr == MAP_FAILED)
         {
-            // NOTE: log error
+            PL_ASSERT_ERRLOG("failed to allocate: %lu", capacity);
             pl_free(arena);
             return nullptr;
         }
@@ -249,7 +248,7 @@ void pl_arena_destroy(struct pl_arena *a)
     {
         if (munmap(a->base, a->capacity) != 0)
         {
-            // NOTE: unmap failed
+            PL_ASSERT_ERRLOG("unmap failed for: %s", a->name);
             return;
         }
         a->base = nullptr;
@@ -276,7 +275,7 @@ void *pl_arena_push_aligned(struct pl_arena *a, u64 size, u64 align)
 
     if (start + size > a->capacity)
     {
-        // NOTE: log oom error;
+        pl_err("Arena: %s | Requested: %lu | Have: %lu", a->name, size, a->capacity);
         return nullptr;
     }
 
@@ -322,4 +321,12 @@ void pl_arena_reset_hard(struct pl_arena *a)
     madvise(a->base, a->used, MADV_DONTNEED);
 
     a->used = 0;
+}
+
+char *pl_arena_strdup(struct pl_arena *a, const char *s)
+{
+    size_t len = strlen(s) + 1;
+    char  *dst = pl_arena_push(a, len);
+    memcpy(dst, s, len);
+    return dst;
 }

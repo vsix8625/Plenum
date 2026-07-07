@@ -18,6 +18,9 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
+typedef __int128_t  i128;
+typedef __uint128_t u128;
+
 typedef float  f32;
 typedef double f64;
 
@@ -79,6 +82,8 @@ static_assert(sizeof(void *) == 8);  // std=c23
 #define PL_BUF_SIZE_64K  (1 << 16)
 
 #define PL_PATH_MAX 4096
+
+#define PL_U64_MAX (UINT64_MAX)
 
 //----------------------------------------------------------------------------------------------------
 

@@ -17,6 +17,7 @@ void             pl_arena_destroy(struct pl_arena *a);
 void *pl_arena_push_aligned(struct pl_arena *a, u64 size, u64 align);
 void *pl_arena_push(struct pl_arena *a, u64 size);
 void *pl_arena_zero_push(struct pl_arena *a, u64 size);
+char *pl_arena_strdup(struct pl_arena *a, const char *s);
 
 void pl_arena_reset_soft(struct pl_arena *a);
 void pl_arena_reset_hard(struct pl_arena *a);

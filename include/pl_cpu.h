@@ -2,8 +2,8 @@
 
 #include "pl_defs.h"
 
-u32 pl_cpu_nproc(void);
-u32 pl_cpu_cacheline(void);
+u64 pl_cpu_nproc(void);
+u64 pl_cpu_cacheline(void);
 
 #if defined(__x86_64__) || defined(_M_X64)
     #define PL_ARCH_NAME "x86_64"

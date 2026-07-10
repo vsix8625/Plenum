@@ -12,11 +12,21 @@ struct pl_thread
     atomic_bool  running;
 };
 
+static pl_status pl_thread_join(struct pl_thread *thrd);
+
+bool pl_thread_is_running(struct pl_thread *thrd)
+{
+    if (thrd == nullptr)
+    {
+        return false;
+    }
+
+    return atomic_load(&thrd->running);
+}
+
 static void *pl_thread_entry(void *arg)
 {
     struct pl_thread *thrd = (struct pl_thread *) arg;
-
-    atomic_store(&thrd->running, true);
 
     thrd->fn(thrd->arg);
 
@@ -25,48 +35,53 @@ static void *pl_thread_entry(void *arg)
     return nullptr;
 }
 
-pl_status pl_thread_create(struct pl_thread *thrd, pl_thread_fn fn, void *arg)
+struct pl_thread *pl_thread_create(pl_thread_fn fn, void *arg)
 {
-    if (thrd == nullptr || fn == nullptr)
+    if (fn == nullptr)
     {
-        return PL_ERROR;
+        return nullptr;
     }
 
-    thrd->fn  = fn;
-    thrd->arg = arg;
+    struct pl_thread *t = pl_calloc(1, sizeof(struct pl_thread));
 
-    atomic_store(&thrd->running, false);
+    if (t == nullptr)
+    {
+        PL_ASSERT_ERRLOG("failed to allocate for pl_thread");
+        return nullptr;
+    }
 
-    i32 rc = pthread_create(&thrd->handle, nullptr, pl_thread_entry, thrd);
+    t->fn  = fn;
+    t->arg = arg;
+    atomic_store(&t->running, true);
+
+    i32 rc = pthread_create(&t->handle, nullptr, pl_thread_entry, t);
     if (rc != PL_OK)
     {
         errno = rc;
         PL_ASSERT_ERRLOG("failed to create thread");
-        return PL_ERROR;
+        pl_free(t);
+        return nullptr;
     }
 
-    return PL_OK;
+    return t;
 }
 
-pl_status pl_thread_join(struct pl_thread *thrd)
+void pl_thread_destroy(struct pl_thread *thrd)
+{
+    if (thrd)
+    {
+        pl_thread_join(thrd);
+        pl_free(thrd);
+    }
+}
+
+static pl_status pl_thread_join(struct pl_thread *thrd)
 {
     i32 rc = pthread_join(thrd->handle, nullptr);
     if (rc != PL_OK)
     {
         errno = rc;
-        PL_ASSERT_ERRLOG("failed to join threads");
-        return PL_ERROR;
-    }
-    return PL_OK;
-}
-
-pl_status pl_thread_detach(struct pl_thread *thrd)
-{
-    i32 rc = pthread_detach(thrd->handle);
-    if (rc != PL_OK)
-    {
-        errno = rc;
-        PL_ASSERT_ERRLOG("failed to detach threads");
+        PL_ASSERT_ERRLOG("failed to join thread");
         return PL_ERROR;
     }
     return PL_OK;

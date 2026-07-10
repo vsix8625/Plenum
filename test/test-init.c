@@ -18,10 +18,15 @@ i32 main(void)
 
     pl_log("Hello world from test-init.c");
 
-    pl_printf("This is raw printf style %d\n", 101);
-    pl_log("This is log style %s", "logger");
-    pl_warn("This is warn style %d", -1);
-    pl_err("This is err style");
+    pl_dbg("Pagesize %lu", pl_sys_pagesize());
+    pl_dbg("Stream MAX: %lu", pl_sys_stream_max());
+    pl_dbg("POSIX version: %lu", pl_sys_posix_version());
+    pl_dbg("POSIX2 version: %lu", pl_sys_posix2_version());
+    pl_dbg("PHYS_PAGES: %lu | AVAIL: %lu", pl_sys_phys_pages(), pl_sys_avail_phys_pages());
+    pl_warn("CPU cores: %lu | Cacheline: %lu", pl_cpu_nproc(), pl_cpu_cacheline());
+    pl_log("RAM: %.1f/%.1f",
+           pl_sys_used_phys_memory() / (1024.0 * 1024.0 * 1024.0),
+           pl_sys_total_phys_memory() / (1024.0 * 1024.0 * 1024.0));
 
     PL_ASSERT_ERRLOG("Error in test");
 

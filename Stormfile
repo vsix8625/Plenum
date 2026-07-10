@@ -1,7 +1,9 @@
 cc: /usr/bin/gcc
 cflags: -Wall -Wextra -Werror -std=c23
 
-if(__sk_version_minor__ <= 8){
+print: __sk_version__
+if(__sk_version_minor__ <= 8)
+{
     exit: "Requires sk version 0.8.x or latest"
 }
 
@@ -17,7 +19,7 @@ if(run_tests){
             -DPL_USE_CONSTRUCTOR
 
         sources:
-            src/
+            core/
             test/test_ctor.c
 
         includes:
@@ -33,7 +35,7 @@ if(run_tests){
         defines: -DDEBUG
 
         sources:
-            src/
+            core/
             test/arena.c
 
         includes:
@@ -49,29 +51,96 @@ if(run_tests){
         defines: -DDEBUG
 
         sources:
-            src/
+            core/
             test/test-init.c
 
         includes:
             -I.
             -Iinclude
     }
+
+    target test_thread
+    {
+        kind: test
+        cflags::
+            -ggdb
+
+        defines:
+            -DDEBUG
+            -DPL_USE_CONSTRUCTOR
+
+        sources:
+            core/
+            test/test_thread.c
+
+        includes:
+            -I.
+            -Iinclude
+    }
+
+    target test_gfx
+    {
+        kind: test
+        cflags::
+            -ggdb
+        lflags:
+            -lSDL3
+            -pthread
+
+        defines:
+            -DDEBUG
+            -DPL_USE_CONSTRUCTOR
+
+        sources:
+            core/
+            gfx/
+            test/test_gfx.c
+
+        includes:
+            -I.
+            -Igfx
+            -Iinclude
+    }
 }
+
 
 target plenum-debug
 {
-    print: __sk_version__
     linker: mold
     kind: static
 
-    cflags::  -ggdb -pthread
-    lflags:: -pthread
-    defines: -DDEBUG
+    cflags::
+        -ggdb
+        -pthread
+    defines:
+        -DDEBUG
 
     sources:
-        src/
+        core/
 
     includes:
-        -I.
+        -Icore
         -Iinclude
+
+    if(gui)
+    {
+        defines::
+            -DPL_USE_GFX
+            -DPL_USE_GUI
+        sources::
+            gfx/
+            gui/
+        includes::
+            -Igfx
+            -Igui
+    }
+    else if(gfx)
+    {
+        defines::
+            -DPL_USE_GFX
+        sources::
+            gfx/
+        includes::
+            -Igfx
+    }
 }

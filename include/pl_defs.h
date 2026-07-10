@@ -125,6 +125,7 @@ static_assert(sizeof(void *) == 8);  // std=c23
 #define PL_UNUSED(v)             (void) (v)
 #define PL_MIN(a, b)             ((a) < (b) ? (a) : (b))
 #define PL_MAX(a, b)             ((a) > (b) ? (a) : (b))
+#define PL_CLAMP(v, lo, hi)      (PL_MIN(PL_MAX((v), (lo)), (hi)))
 
 //----------------------------------------------------------------------------------------------------
 

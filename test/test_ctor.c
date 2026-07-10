@@ -6,6 +6,7 @@ i32 main(void)
     if (!pl_is_initialized())
     {
         // if its false, exit
+        fprintf(stderr, "Plenum is not initialized\n");
         return PL_EXIT_FAILURE;
     }
 

@@ -17,6 +17,7 @@ i32 main(void)
     {
         return PL_EXIT_FAILURE;
     }
+    pl_io_set_prefix(PL_IO_LOG_LEVEL_LOG, "[test_thread]: ", PL_IO_COLOR_GREEN);
 
     pl_log("[Main] Creating thread...");
     struct pl_thread *my_thread = pl_thread_create(worker_function, nullptr);

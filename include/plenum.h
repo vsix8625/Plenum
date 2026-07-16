@@ -13,9 +13,6 @@
 #include "pl_array.h"   // IWYU pragma: export
 #include "pl_thread.h"  // IWYU pragma: export
 
-#if defined(PL_USE_GFX)
-    #include "pl_gfx.h"  // IWYU pragma: export
-#endif
-#if defined(PL_USE_GUI)
-    #include "pl_gui.h"  // IWYU pragma: export
+#if defined(PL_USE_UI)
+    #include "pl_sdl3.h"  // IWYU pragma: export
 #endif

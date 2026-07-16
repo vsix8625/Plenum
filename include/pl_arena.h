@@ -12,7 +12,7 @@ struct pl_arena
     const char *name;
 };
 
-struct pl_arena_tmp
+struct pl_arena_marker
 {
     struct pl_arena *arena;
 
@@ -30,8 +30,17 @@ char *pl_arena_strdup(struct pl_arena *a, const char *s);
 void pl_arena_reset_soft(struct pl_arena *a);
 void pl_arena_reset_hard(struct pl_arena *a);
 
-struct pl_arena_tmp pl_arena_tmp_begin(struct pl_arena *a);
-void                pl_arena_tmp_end(struct pl_arena_tmp tmp);
+/*
+ * Mark the current allocation offset of an arena.
+ * Any allocations made on that arena after this call can be 'freed'
+ * by passing the returned token to `pl_arena_marker_end()`.
+ */
+struct pl_arena_marker pl_arena_marker_begin(struct pl_arena *arena);
+
+/*
+ * Rewinds back the arena's bump pointer to the specified checkpoint marker.
+ */
+void pl_arena_marker_end(struct pl_arena_marker marker);
 
 static inline size_t pl_arena_nxtpow2(size_t v)
 {

@@ -7,6 +7,20 @@ if(__sk_version_minor__ <= 8)
     exit: "Requires sk version 0.8.x or latest"
 }
 
+major: 0
+minor: 1
+micro: 1
+
+codegen include/pl_config.h
+{
+    literal: "#pragma once"
+    define: PL_VERSION_MAJOR major
+    define: PL_VERSION_MINOR minor
+    define: PL_VERSION_MICRO micro
+
+    define: PL_VERSION_STR "major.minor.micro"
+}
+
 if(run_tests){
     target test_ctor
     {
@@ -21,38 +35,6 @@ if(run_tests){
         sources:
             core/
             test/test_ctor.c
-
-        includes:
-            -I.
-            -Iinclude
-    }
-
-    target test_arena
-    {
-        kind: test
-        cflags:: -ggdb
-
-        defines: -DDEBUG
-
-        sources:
-            core/
-            test/arena.c
-
-        includes:
-            -I.
-            -Iinclude
-    }
-
-    target test-init
-    {
-        kind: test
-
-        cflags::  -ggdb
-        defines: -DDEBUG
-
-        sources:
-            core/
-            test/test-init.c
 
         includes:
             -I.
@@ -78,7 +60,7 @@ if(run_tests){
             -Iinclude
     }
 
-    target test_gfx
+    target test_ui
     {
         kind: test
         cflags::
@@ -90,15 +72,16 @@ if(run_tests){
         defines:
             -DDEBUG
             -DPL_USE_CONSTRUCTOR
+            -DPL_USE_UI
 
         sources:
             core/
-            gfx/
-            test/test_gfx.c
+            ui/
+            test/test_ui.c
 
         includes:
             -I.
-            -Igfx
+            -Iui
             -Iinclude
     }
 }
@@ -122,25 +105,11 @@ target plenum-debug
         -Icore
         -Iinclude
 
-    if(gui)
+    if(ui)
     {
-        defines::
-            -DPL_USE_GFX
-            -DPL_USE_GUI
         sources::
-            gfx/
-            gui/
+            ui/
         includes::
-            -Igfx
-            -Igui
-    }
-    else if(gfx)
-    {
-        defines::
-            -DPL_USE_GFX
-        sources::
-            gfx/
-        includes::
-            -Igfx
+            -Iui
     }
 }

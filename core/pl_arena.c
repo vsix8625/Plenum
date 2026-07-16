@@ -329,25 +329,25 @@ char *pl_arena_strdup(struct pl_arena *a, const char *s)
     return dst;
 }
 
-struct pl_arena_tmp pl_arena_tmp_begin(struct pl_arena *a)
+struct pl_arena_marker pl_arena_marker_begin(struct pl_arena *arena)
 {
-    struct pl_arena_tmp tmp = {0};
+    struct pl_arena_marker marker = {0};
 
-    if (a == nullptr)
+    if (arena == nullptr)
     {
-        return tmp;
+        return marker;
     }
 
-    tmp.arena  = a;
-    tmp.offset = a->used;
+    marker.arena  = arena;
+    marker.offset = arena->used;
 
-    return tmp;
+    return marker;
 }
 
-void pl_arena_tmp_end(struct pl_arena_tmp tmp)
+void pl_arena_marker_end(struct pl_arena_marker marker)
 {
-    if (tmp.arena != nullptr)
+    if (marker.arena != nullptr)
     {
-        tmp.arena->used = tmp.offset;
+        marker.arena->used = marker.offset;
     }
 }
